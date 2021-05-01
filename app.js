@@ -4,8 +4,12 @@ const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const cors = require("cors");
+const path = require("path");
 
-const AppError = require("./utils/AppError");
+const globalErrorHandler = require("./controllers/errorController");
+const AppError = require("./errors/AppError");
+
+const userRouter = require("./routes/userRouter");
 
 // Start express app
 const app = express();
@@ -14,6 +18,9 @@ const app = express();
 // Implement cors
 app.use(cors());
 app.options("*", cors());
+
+// Serving static files
+app.use(express.static(path.join(__dirname, "public")));
 
 // Set security HTTP headers
 app.use(helmet());
@@ -38,17 +45,12 @@ app.use(xss());
 
 // 3) ROUTES
 // TODO: Will be implemented
+app.use("/api/v1/users", userRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-app.use((err, req, res, next) => {
-  const { statusCode = 500 } = err;
-  if (!err.message) {
-    err.message = "Oh no, Something Went Wrong";
-  }
-  res.status(statusCode).json({ err });
-});
+app.use(globalErrorHandler);
 
 module.exports = app;

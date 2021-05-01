@@ -7,6 +7,7 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 });
 
+dotenv.config();
 const app = require("./app");
 
 mongoose.connect("mongodb://localhost:27017/clinic", {
@@ -22,7 +23,7 @@ db.once("open", () => {
   console.log("Database connected");
 });
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
