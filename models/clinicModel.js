@@ -14,7 +14,7 @@ const clinicSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  image_url: imageSchema,
+  image: imageSchema,
   description: String,
   name: String,
   address: String,
@@ -30,13 +30,13 @@ const clinicSchema = mongoose.Schema({
       required: true,
     },
   },
-  appointments: [
-    {
-      ticket: Number,
-      state_time: Date,
-      end_time: Date,
-    },
-  ],
+  startTime: Date,
+  endTime: Date,
+  status: {
+    type: String,
+    enum: ["pending", "denied", "approved"],
+    default: "pending",
+  },
 });
 
 const Clinic = mongoose.model("Clinic", clinicSchema);

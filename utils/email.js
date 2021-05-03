@@ -1,56 +1,25 @@
-const axios = require("axios");
-const sendgridApiKey = `${process.env.SENDGRID_API_KEY}`;
-const emailSendUrl = "https://api.sendgrid.com/v3/mail/send";
-const EmailType = {
-  //  WELCOME_EMAIL: 'd-026a2f461bdd480098be08a2cb949eea',
-  CHANGE_PASSWORD: "d-099c03cfa83d46a6a99aa161f58d98de",
-  //  OTP: 'd-026a2f461bdd480098be08bxhsyeyyy',
+const sgMail = require("@sendgrid/mail");
+const sendgridApiKey =
+  "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";
+sgMail.setApiKey(sendgridApiKey);
+// sgMail.setApiKey(`${process.env.SENDGRID_API_KEY}`);
+// em4126.fpt.edu.vn
+const msg = {
+  to: "khoindct123@gmail.com",
+  from: "khoindct123@gmail.com", // Use the email address or domain you verified above
+  subject: "Sending with Twilio SendGrid is Fun",
+  text: "and easy to do anywhere, even with Node.js",
+  html: "<strong>and easy to do anywhere, even with Node.js</strong>",
 };
+//ES8
+(async () => {
+  try {
+    await sgMail.send(msg);
+  } catch (error) {
+    console.error(error);
 
-module.exports.sendTemplateEmail = (
-  fromEmail,
-  toEmail,
-  replyTo,
-  fromName,
-  template,
-  substitutions,
-  attachment
-) => {
-  if (!EmailType[template]) {
-    return Promise.reject(new Error("Template not defined"));
+    if (error.response) {
+      console.error(error.response.body);
+    }
   }
-  const email = {
-    from: {
-      email: fromEmail,
-      name: fromName,
-    },
-    template_id: EmailType[template],
-    personalizations: [
-      {
-        to: [
-          {
-            email: toEmail,
-          },
-        ],
-        dynamic_template_data: substitutions,
-      },
-    ],
-  };
-  if (attachment) {
-    email.attachments = attachment;
-  }
-  if (replyTo) {
-    email.reply_to = {
-      email: replyTo,
-      name: "Reply",
-    };
-  }
-  return axios({
-    method: "post",
-    url: emailSendUrl,
-    headers: {
-      Authorization: `Bearer ${sendgridApiKey}`,
-    },
-    data: email,
-  });
-};
+})();
