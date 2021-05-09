@@ -18,8 +18,9 @@ const app = express();
 
 // ----------------- GLOBAL MIDDLEWARES -----------------
 // Implement cors
-app.use(cors());
-app.options("*", cors());
+// app.use(cors());
+// app.options("*", cors());
+app.use(cors({ origin: true, credentials: true }));
 
 // Serving static files
 app.use(express.static(path.join(__dirname, "public")));
