@@ -14,12 +14,13 @@ const clinicSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  image: imageSchema,
+  coverImage: imageSchema,
   description: String,
   name: String,
+  email: String,
   address: String,
   phone: String,
-  geometry: {
+  location: {
     type: {
       type: String,
       enum: ["Point"],
@@ -30,8 +31,13 @@ const clinicSchema = mongoose.Schema({
       required: true,
     },
   },
-  startTime: Date,
-  endTime: Date,
+  schedule: [
+    {
+      startTime: Date,
+      endTime: Date,
+      dayOfWeek: [0, 1, 2, 3, 4, 5, 6],
+    },
+  ],
   status: {
     type: String,
     enum: ["pending", "denied", "approved"],
