@@ -7,17 +7,15 @@ const upload = multer({ storage });
 
 const router = express.Router();
 
-router.use(authController.protect);
-
 router
   .route("/")
   .get(clinicController.getAllClinics)
-  .post(upload.array("image"), clinicController.createClinic);
+  .post(upload.single("coverImage"), clinicController.createClinic);
 
 router
   .route("/:id")
   .get(clinicController.getClinic)
-  .patch(upload.array("image"), clinicController.updateClinic)
+  .patch(upload.single("coverImage"), clinicController.updateClinic)
   .delete(clinicController.deleteClinic);
 
 module.exports = router;

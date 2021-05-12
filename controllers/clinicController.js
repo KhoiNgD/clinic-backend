@@ -10,10 +10,10 @@ exports.deleteClinic = factory.deleteOne(Clinic);
 exports.createClinic = catchAsync(async (req, res, next) => {
   // TODO: Add geometry for clinic
   const clinic = new Clinic(req.body);
-  clinic.images = req.files.map((f) => ({
-    url: f.path,
-    filename: f.filename,
-  }));
+  clinic.coverImage = {
+    url: req.file.path,
+    filename: req.file.filename,
+  };
   await clinic.save();
   res.status(201).json({
     status: "success",

@@ -20,10 +20,11 @@ const clinicSchema = mongoose.Schema({
   email: String,
   address: String,
   phone: String,
-  location: {
+  geometry: {
     type: {
       type: String,
       enum: ["Point"],
+      default: "Point",
       required: true,
     },
     coordinates: {
