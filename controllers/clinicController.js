@@ -8,7 +8,8 @@ exports.updateClinic = factory.updateOne(Clinic);
 exports.deleteClinic = factory.deleteOne(Clinic);
 
 exports.createClinic = catchAsync(async (req, res, next) => {
-  // TODO: Add geometry for clinic
+  console.log(req.body);
+  // if (!req.file) return res.status(422).send("Please upload a file");
   const clinic = new Clinic(req.body);
   clinic.geometry = JSON.parse(req.body.geometry);
   clinic.coverImage = {

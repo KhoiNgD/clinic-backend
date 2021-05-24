@@ -32,8 +32,8 @@ const clinicSchema = mongoose.Schema({
   },
   schedule: [
     {
-      startTime: Date,
-      endTime: Date,
+      startTime: Number,
+      endTime: Number,
       dayOfWeek: [0, 1, 2, 3, 4, 5, 6],
     },
   ],
