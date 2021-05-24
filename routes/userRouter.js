@@ -8,6 +8,9 @@ const {
     validateSignup,
     validateLogin,
 } = require("../middlewares/validates/auth-validate-request");
+const multer = require("multer");
+const { storage } = require("../cloudinary");
+const upload = multer({ storage });
 
 const router = express.Router();
 
@@ -22,7 +25,7 @@ router
 router
     .route("/:id")
     .get(userController.getUser)
-    .patch(upload.single("coverImage"), clinicController.updateUser)
+    .patch(upload.single("coverImage"), userController.updateUser)
     .delete(userController.deleteUser);
 
 module.exports = router;
