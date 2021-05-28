@@ -34,7 +34,10 @@ const clinicSchema = mongoose.Schema({
     {
       startTime: Number,
       endTime: Number,
-      dayOfWeek: [0, 1, 2, 3, 4, 5, 6],
+      dayOfWeek: {
+        type: Number,
+        enum: [0, 1, 2, 3, 4, 5, 6],
+      },
     },
   ],
   status: {

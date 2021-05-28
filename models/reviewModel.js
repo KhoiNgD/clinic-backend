@@ -8,6 +8,15 @@ const reviewSchema = new mongoose.Schema(
       min: 1,
       max: 5,
     },
+    replies: [
+      {
+        type: String,
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      },
+    ],
     clinic: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Clinic",
