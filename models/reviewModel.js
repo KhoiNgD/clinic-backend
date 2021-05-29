@@ -17,10 +17,6 @@ const reviewSchema = new mongoose.Schema(
         },
       },
     ],
-    clinic: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Clinic",
-    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -28,8 +24,6 @@ const reviewSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
   }
 );
 

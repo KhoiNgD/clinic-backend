@@ -3,9 +3,31 @@ const catchAsync = require("../utils/catchAsync");
 const factory = require("./handlerFactory");
 
 exports.getAllClinics = factory.getAll(Clinic);
-exports.getClinic = factory.getOne(Clinic);
 exports.updateClinic = factory.updateOne(Clinic);
 exports.deleteClinic = factory.deleteOne(Clinic);
+
+exports.getClinic = catchAsync(async (req, res, next) => {
+  const clinic = await Clinic.findById(req.params.id);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      data: clinic,
+    },
+  });
+});
+
+exports.getApprovedClinics = catchAsync(async (req, res, next) => {
+  const clinics = await Clinic.find({ status: "approved" });
+
+  res.status(200).json({
+    status: "success",
+    results: clinics.length,
+    data: {
+      data: clinics,
+    },
+  });
+});
 
 exports.createClinic = catchAsync(async (req, res, next) => {
   if (!req.file) return res.status(422).send("Please upload a file");

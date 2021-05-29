@@ -9,8 +9,10 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(clinicController.getAllClinics)
+  .get(authController.restrictTo("admin"), clinicController.getAllClinics)
   .post(upload.single("coverImage"), clinicController.createClinic);
+
+router.get("/approved-clinics", clinicController.getApprovedClinics);
 
 router
   .route("/:id")
