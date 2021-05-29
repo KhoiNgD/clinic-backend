@@ -4,19 +4,17 @@ const bookingController = require("../controllers/bookingController");
 
 const router = express.Router();
 
+router.get("/", bookingController.getAllBookings);
+
 router.use(authController.protect);
 
-router.route("/").get(bookingController.getAllBookings);
-
-router.post("/:clinicId", bookingController.createBooking);
+router.post(
+    "/:clinicId",
+    authController.restrictTo("patient"),
+    bookingController.createBooking
+);
 
 router.get("/:clinicId", bookingController.getBookingsByClinic);
 router.get("/:userId", bookingController.getBookingsByUser);
-
-router
-    .route("/:id")
-    .get(bookingController.getBooking)
-    .patch(bookingController.updateBooking)
-    .delete(bookingController.deleteBooking);
 
 module.exports = router;
