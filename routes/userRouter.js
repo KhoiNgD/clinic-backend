@@ -21,7 +21,7 @@ router.get("/logout", authController.logout);
 router.get("/current-user", authController.getCurrentUser);
 
 router.use(authController.protect);
-
+router.patch("/updatePassword", authController.updatePassword);
 router
   .route("/:id")
   .get(userController.getUser)
