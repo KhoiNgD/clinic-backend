@@ -16,7 +16,8 @@ const userSchema = mongoose.Schema({
   phone: String,
   avatar: {
     type: avatarSchema,
-    // default: "avatar-default.jpg", //TODO: set default avatar image
+    default:
+      "https://res.cloudinary.com/dxqljhtd4/image/upload/v1622340763/Clinic/default-avatar_hblknx.jpg", //TODO: set default avatar image
   },
   role: {
     type: String,
