@@ -25,6 +25,6 @@ router.use(authController.protect);
 router
   .route("/:id")
   .get(userController.getUser)
-  .put(isAuthor, upload.single("coverImage"), userController.updateUser);
+  .put(isAuthor, upload.single("avatar"), userController.updateUser);
 
 module.exports = router;

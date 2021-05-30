@@ -9,13 +9,10 @@ exports.updateUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const { name, email, phone } = req.body;
   const updateValues = { name, email, phone };
-  const user = User.findByIdAndUpdate(id, updateValues);
-
+  const user = await User.findByIdAndUpdate(id, updateValues);
   user.avatar = {
-    url: req.file
-      ? req.file?.path
-      : "https://res.cloudinary.com/dxqljhtd4/image/upload/v1622340763/Clinic/default-avatar_hblknx.jpg",
-    filename: req.file ? req.file.filename : "default-avatar_hblknx.jpg",
+    url: req.file?.path ?? "",
+    filename: req.file?.filename ?? "",
   };
   await user.save();
 
