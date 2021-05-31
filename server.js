@@ -10,7 +10,7 @@ process.on("uncaughtException", (err) => {
 dotenv.config();
 const app = require("./app");
 
-mongoose.connect("mongodb://localhost:27017/clinic", {
+mongoose.connect(process.env.DATABSASE_CLUSTER, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
