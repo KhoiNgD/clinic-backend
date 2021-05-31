@@ -19,3 +19,31 @@ module.exports.createReview = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.createReply = catchAsync(async (req, res, next) => {
+  const { reviewId } = req.params;
+  const { reply } = req.body;
+  const review = await Review.findById(reviewId);
+  review.replies.push({ reply, user: req.user._id });
+  await review.save();
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      data: review,
+    },
+  });
+});
+
+exports.getForClinic = catchAsync(async (req, res, next) => {
+  const clinic = await Clinic.find({ email: req.user.email });
+  const reviews = clinic.reviews;
+
+  res.status(201).json({
+    status: "success",
+    results: reviews.length,
+    data: {
+      data: reviews,
+    },
+  });
+});

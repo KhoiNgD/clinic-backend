@@ -10,7 +10,7 @@ const reviewSchema = new mongoose.Schema(
     },
     replies: [
       {
-        type: String,
+        reply: String,
         user: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
@@ -26,6 +26,11 @@ const reviewSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+reviewSchema.pre(/^find/, function (next) {
+  this.populate("user").populate({ path: "replies", populate: "user" });
+  next();
+});
 
 const Review = mongoose.model("Review", reviewSchema);
 

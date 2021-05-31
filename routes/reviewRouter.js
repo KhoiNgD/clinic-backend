@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.use(authController.protect);
 
+router.get("/getForClinic", reviewController.getForClinic);
 router.post("/:clinicId", reviewController.createReview);
+router.post("/:reviewId", reviewController.createReply);
 
 module.exports = router;
