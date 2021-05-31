@@ -9,12 +9,21 @@ router.get("/", bookingController.getAllBookings);
 router.use(authController.protect);
 
 router.post(
-    "/:clinicId",
-    authController.restrictTo("patient"),
-    bookingController.createBooking
+  "/:clinicId",
+  authController.restrictTo("patient"),
+  bookingController.createBooking
 );
 
-router.get("/:clinicId", bookingController.getBookingsByClinic);
-router.get("/:userId", bookingController.getBookingsByUser);
+router.get(
+  "/:clinicId",
+  authController.protect,
+  authController.restrictTo("doctor"),
+  bookingController.getBookingsByClinic
+);
+router.get(
+  "/:userId",
+  authController.protect,
+  bookingController.getBookingsByUser
+);
 
 module.exports = router;

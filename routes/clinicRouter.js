@@ -9,7 +9,11 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(authController.restrictTo("admin"), clinicController.getAllClinics)
+  .get(
+    authController.protect,
+    authController.restrictTo("admin"),
+    clinicController.getAllClinics
+  )
   .post(upload.single("coverImage"), clinicController.createClinic);
 
 router.get("/approved-clinics", clinicController.getApprovedClinics);
@@ -17,7 +21,16 @@ router.get("/approved-clinics", clinicController.getApprovedClinics);
 router
   .route("/:id")
   .get(clinicController.getClinic)
-  .patch(upload.single("coverImage"), clinicController.updateClinic)
-  .delete(clinicController.deleteClinic);
+  .put(
+    authController.protect,
+    authController.restrictTo("admin"),
+    clinicController.updateStatusClinic
+  )
+  .patch(
+    authController.protect,
+    authController.restrictTo("doctor"),
+    upload.single("coverImage"),
+    clinicController.updateClinic
+  );
 
 module.exports = router;
