@@ -38,3 +38,29 @@ module.exports.sendPasswordReset = async (user, url) => {
     }
   }
 };
+
+module.exports.sendClinicApprove = async (user, password) => {
+  const html = pug.renderFile(`${__dirname}/../views/email/clinicApprove.pug`, {
+    name: user.name,
+    subject: "Your clinic register is approved",
+    password,
+  });
+
+  const msg = {
+    to: user.email,
+    from: "khoindct123@gmail.com", // Use the email address or domain you verified above
+    subject: "Sending with Twilio SendGrid is Fun",
+    text: "and easy to do anywhere, even with Node.js",
+    html,
+  };
+
+  try {
+    await sgMail.send(msg);
+  } catch (error) {
+    console.error(error);
+
+    if (error.response) {
+      console.error(error.response.body);
+    }
+  }
+};

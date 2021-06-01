@@ -15,7 +15,7 @@ router.post(
 );
 
 router.get(
-  "/:clinicId",
+  "/booking-for-clinics",
   authController.protect,
   authController.restrictTo("doctor"),
   bookingController.getBookingsByClinic

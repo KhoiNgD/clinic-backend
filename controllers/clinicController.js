@@ -1,5 +1,7 @@
 const Clinic = require("../models/clinicModel");
+const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
+const { sendClinicApprove } = require("../utils/email");
 const factory = require("./handlerFactory");
 
 exports.getAllClinics = factory.getAll(Clinic);
@@ -9,6 +11,31 @@ exports.deleteClinic = factory.deleteOne(Clinic);
 exports.updateStatusClinic = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const clinic = await Clinic.findByIdAndUpdate(id, req.body, { new: true });
+  if (req.body.status === "approved") {
+    const user = await User.findOne({ email: clinic.email });
+    console.log(user);
+    if (!user) {
+      const passwordGenerated = Math.random().toString(36).slice(-8);
+      const newUser = new User();
+      newUser.name = clinic.name;
+      newUser.email = clinic.email;
+      newUser.password = passwordGenerated;
+      newUser.role = "doctor";
+      newUser.save();
+      // Send email
+      try {
+        console.log(newUser);
+        await sendClinicApprove(newUser, passwordGenerated);
+      } catch (error) {
+        return next(
+          new AppError(
+            "There was an error sending the email. Try again later!"
+          ),
+          500
+        );
+      }
+    }
+  }
   res.status(200).json({
     status: "success",
     data: {
