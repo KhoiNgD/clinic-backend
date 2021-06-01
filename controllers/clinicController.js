@@ -7,11 +7,8 @@ exports.updateClinic = factory.updateOne(Clinic);
 exports.deleteClinic = factory.deleteOne(Clinic);
 
 exports.updateStatusClinic = catchAsync(async (req, res, next) => {
-  const { clinicId } = req.params;
-  const clinic = await Clinic.findByIdAndUpdate(clinicId, req.body, {
-    new: true,
-  });
-
+  const { id } = req.params;
+  const clinic = await Clinic.findByIdAndUpdate(id, req.body, { new: true });
   res.status(200).json({
     status: "success",
     data: {
