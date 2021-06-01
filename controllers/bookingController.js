@@ -16,6 +16,8 @@ exports.getAllBookings = catchAsync(async (req, res, next) => {
 exports.createBooking = catchAsync(async (req, res, next) => {
   const { clinicId } = req.params;
   const { bookedDate, bookedTime } = req.body;
+  console.log(bookedDate);
+  console.log(bookedTime);
   const booking = new Booking();
   booking.bookedDate = bookedDate;
   booking.bookedTime =
@@ -34,9 +36,7 @@ exports.createBooking = catchAsync(async (req, res, next) => {
 
 exports.getBookingsByUser = catchAsync(async (req, res, next) => {
   const { userId } = req.params;
-
-  const bookings = Booking.find({ userId });
-
+  const bookings = await Booking.find({ user: userId });
   res.status(201).json({
     status: "success",
     data: {
