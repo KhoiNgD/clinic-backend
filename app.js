@@ -25,6 +25,7 @@ const app = express();
 app.use(cors({ origin: true, credentials: true }));
 
 // Serving static files
+app.set("view engine", "pug");
 app.use(express.static(path.join(__dirname, "public")));
 
 // Set security HTTP headers
