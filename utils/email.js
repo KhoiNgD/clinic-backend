@@ -56,6 +56,7 @@ module.exports.sendClinicApprove = async (user, password) => {
 
   try {
     await sgMail.send(msg);
+    console.log("email sent");
   } catch (error) {
     console.error(error);
 

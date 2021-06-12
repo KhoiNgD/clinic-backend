@@ -13,8 +13,7 @@ exports.updateStatusClinic = catchAsync(async (req, res, next) => {
   const clinic = await Clinic.findByIdAndUpdate(id, req.body, { new: true });
   if (req.body.status === "approved") {
     const user = await User.findOne({ email: clinic.email });
-    console.log(user);
-    if (!user) {
+    if (user) {
       const passwordGenerated = Math.random().toString(36).slice(-8);
       const newUser = new User();
       newUser.name = clinic.name;
@@ -24,7 +23,6 @@ exports.updateStatusClinic = catchAsync(async (req, res, next) => {
       newUser.save();
       // Send email
       try {
-        console.log(newUser);
         await sendClinicApprove(newUser, passwordGenerated);
       } catch (error) {
         return next(
