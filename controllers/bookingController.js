@@ -37,22 +37,49 @@ exports.createBooking = catchAsync(async (req, res, next) => {
 });
 
 exports.getBookings = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const user = await User.findById(id);
+  const user = req.user;
 
   let bookings;
   if (user.role === "doctor") {
-    const clinic = await Clinic.findOne({ email: req.user.email });
-    bookings = await Booking.find({ clinic: clinic._id });
+    const clinic = await Clinic.findOne({ email: user.email });
+    bookings = await Booking.find({ clinic: clinic._id }).select("-clinic");
   }
   if (user.role === "patient") {
-    bookings = await Booking.find({ user: id });
+    bookings = await Booking.find({ user: id }).select("-user");
   }
 
   res.status(201).json({
     status: "success",
     data: {
       data: bookings,
+    },
+  });
+});
+
+exports.getBookedUsersByClinic = catchAsync(async (req, res, next) => {
+  const user = req.user;
+  const clinic = await Clinic.findOne({ email: user.email });
+  const users = await Booking.aggregate([
+    {
+      $match: { clinic: clinic._id },
+    },
+    {
+      $group: {
+        _id: "$user",
+        totalBooking: { $sum: 1 },
+        user: { $push: "$user" },
+      },
+    },
+    {
+      $sort: { totalBooking: -1 },
+    },
+  ]);
+  await Booking.populate(users, { path: "user", select: "-__v" });
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      users,
     },
   });
 });

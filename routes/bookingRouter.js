@@ -13,6 +13,12 @@ router.post(
   bookingController.createBooking
 );
 
-router.get("/users/:id", bookingController.getBookings);
+// Get booking by User via token
+router.get("/users", bookingController.getBookings);
+router.get(
+  "/users/stats",
+  authController.restrictTo("doctor"),
+  bookingController.getBookedUsersByClinic
+);
 
 module.exports = router;
