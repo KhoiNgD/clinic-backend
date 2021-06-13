@@ -1,5 +1,6 @@
 const Booking = require("../models/bookingModel");
 const Clinic = require("../models/clinicModel");
+const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 
 exports.getAllBookings = catchAsync(async (req, res, next) => {
@@ -35,20 +36,19 @@ exports.createBooking = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getBookingsByUser = catchAsync(async (req, res, next) => {
-  const { userId } = req.params;
-  const bookings = await Booking.find({ user: userId });
-  res.status(201).json({
-    status: "success",
-    data: {
-      data: bookings,
-    },
-  });
-});
+exports.getBookings = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
 
-exports.getBookingsByClinic = catchAsync(async (req, res, next) => {
-  const clinic = await Clinic.findOne({ email: req.user.email });
-  const bookings = await Booking.find({ clinic: clinic._id });
+  let bookings;
+  if (user.role === "doctor") {
+    const clinic = await Clinic.findOne({ email: req.user.email });
+    bookings = await Booking.find({ clinic: clinic._id });
+  }
+  if (user.role === "patient") {
+    bookings = await Booking.find({ user: id });
+  }
+
   res.status(201).json({
     status: "success",
     data: {
