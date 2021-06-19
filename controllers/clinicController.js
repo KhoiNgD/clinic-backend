@@ -5,8 +5,37 @@ const { sendClinicApprove } = require("../utils/email");
 const factory = require("./handlerFactory");
 
 exports.getAllClinics = factory.getAll(Clinic);
-exports.updateClinic = factory.updateOne(Clinic);
 exports.deleteClinic = factory.deleteOne(Clinic);
+
+exports.updateInfoClinic = catchAsync(async (req, res, next) => {
+  const user = req.user;
+  const { name, email, phone, description, address, geometry } = req.body;
+  const updateValues = { name, email, phone, description, address };
+  const clinic = await Clinic.findOne({ email: user.email });
+  const updateClinic = await Clinic.findByIdAndUpdate(
+    clinic._id,
+    updateValues,
+    { new: true }
+  );
+  updateClinic.geometry = JSON.parse(geometry);
+  req.file &&
+    (updateClinic.coverImage = {
+      url: req.file?.path ?? "",
+      filename: req.file?.filename ?? "",
+    });
+  await updateClinic.save();
+
+  if (req.body.deleteCoverImage) {
+    await cloudinary.uploader.destroy(req.body.deleteAvatar);
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      data: updateClinic,
+    },
+  });
+});
 
 exports.updateStatusClinic = catchAsync(async (req, res, next) => {
   const { id } = req.params;
@@ -44,6 +73,20 @@ exports.updateStatusClinic = catchAsync(async (req, res, next) => {
 
 exports.getClinic = catchAsync(async (req, res, next) => {
   const clinic = await Clinic.findById(req.params.id);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      data: clinic,
+    },
+  });
+});
+
+exports.getClinicByToken = catchAsync(async (req, res, next) => {
+  const user = req.user;
+  const clinic = await Clinic.findOne({ email: user.email })
+    .select("-_id -__v -schedule -reviews -status")
+    .lean();
 
   res.status(200).json({
     status: "success",

@@ -16,6 +16,16 @@ router
   )
   .post(upload.single("coverImage"), clinicController.createClinic);
 
+router
+  .route("/detail")
+  .get(authController.protect, clinicController.getClinicByToken)
+  .patch(
+    authController.protect,
+    authController.restrictTo("doctor"),
+    upload.single("coverImage"),
+    clinicController.updateInfoClinic
+  );
+
 router.get("/approved-clinics", clinicController.getApprovedClinics);
 
 router
@@ -25,12 +35,6 @@ router
     authController.protect,
     authController.restrictTo("admin"),
     clinicController.updateStatusClinic
-  )
-  .patch(
-    authController.protect,
-    authController.restrictTo("doctor"),
-    upload.single("coverImage"),
-    clinicController.updateClinic
   );
 
 module.exports = router;

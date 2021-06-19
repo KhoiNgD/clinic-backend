@@ -4,6 +4,7 @@ const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const cors = require("cors");
+const morgan = require("morgan");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 
@@ -30,6 +31,11 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Set security HTTP headers
 app.use(helmet());
+
+// Development logging
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 
 // Limit requests from the same API
 const limiter = rateLimit({
