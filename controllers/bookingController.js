@@ -42,10 +42,15 @@ exports.getBookings = catchAsync(async (req, res, next) => {
   let bookings;
   if (user.role === "doctor") {
     const clinic = await Clinic.findOne({ email: user.email });
-    bookings = await Booking.find({ clinic: clinic._id }).select("-clinic");
+    bookings = await Booking.find({ clinic: clinic._id })
+      .select("-clinic -__v")
+      .populate("user", "-role -__v");
   }
   if (user.role === "patient") {
-    bookings = await Booking.find({ user: id }).select("-user");
+    bookings = await Booking.find({ user: user._id })
+      .select("-user -__v")
+      .populate("clinic", "_id coverImage name -reviews")
+      .lean();
   }
 
   res.status(201).json({
