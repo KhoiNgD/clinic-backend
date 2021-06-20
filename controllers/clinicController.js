@@ -1,3 +1,4 @@
+const { findOne } = require("../models/clinicModel");
 const Clinic = require("../models/clinicModel");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
@@ -26,7 +27,6 @@ exports.updateInfoClinic = catchAsync(async (req, res, next) => {
       url: req.file?.path ?? "",
       filename: req.file?.filename ?? "",
     });
-  console.log(updateClinic);
   await updateClinic.save();
 
   if (req.body.deleteCoverImage) {
@@ -37,6 +37,24 @@ exports.updateInfoClinic = catchAsync(async (req, res, next) => {
     status: "success",
     data: {
       data: updateClinic,
+    },
+  });
+});
+
+exports.updateScheduleClinic = catchAsync(async (req, res, next) => {
+  const user = req.user;
+  const clinic = await Clinic.findOne({ email: user.email });
+  clinic.schedule = [];
+  await clinic.save();
+
+  const scheduleInput = createScheduleClinic(req);
+  clinic.schedule.push(...scheduleInput);
+
+  await clinic.save();
+  res.status(201).json({
+    status: "success",
+    data: {
+      data: clinic,
     },
   });
 });

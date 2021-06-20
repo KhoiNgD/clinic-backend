@@ -26,12 +26,19 @@ router
     clinicController.updateInfoClinic
   );
 
-router.get(
-  "/detail/schedule",
-  authController.protect,
-  authController.restrictTo("doctor"),
-  clinicController.getScheduleClinic
-);
+router
+  .route("/detail/schedule")
+  .get(
+    authController.protect,
+    authController.restrictTo("doctor"),
+    clinicController.getScheduleClinic
+  )
+  .patch(
+    authController.protect,
+    authController.restrictTo("doctor"),
+    clinicController.updateScheduleClinic
+  );
+
 router.get("/approved-clinics", clinicController.getApprovedClinics);
 
 router
