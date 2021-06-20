@@ -60,10 +60,13 @@ const clinicSchema = mongoose.Schema(
 );
 
 clinicSchema.virtual("reviewCount").get(function () {
-  return this.reviews.length;
+  return this?.reviews?.length ?? undefined;
 });
 
 clinicSchema.virtual("ratingAvg").get(function () {
+  if (!this.reviews) {
+    return undefined;
+  }
   if (!this.reviews.length) {
     return 0;
   }

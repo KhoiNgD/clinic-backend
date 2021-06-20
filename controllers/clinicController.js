@@ -9,20 +9,23 @@ exports.deleteClinic = factory.deleteOne(Clinic);
 
 exports.updateInfoClinic = catchAsync(async (req, res, next) => {
   const user = req.user;
-  const { name, email, phone, description, address, geometry } = req.body;
-  const updateValues = { name, email, phone, description, address };
-  const clinic = await Clinic.findOne({ email: user.email });
-  const updateClinic = await Clinic.findByIdAndUpdate(
-    clinic._id,
+  const { geometry, ...updateValues } = req.body;
+  const updateClinic = await Clinic.findOneAndUpdate(
+    { email: user.email },
     updateValues,
-    { new: true }
+    {
+      new: true,
+      projection: { reviews: 0, schedule: 0, __v: 0 },
+      // fields: "coverImage name phone email description address geometry",
+    }
   );
-  updateClinic.geometry = JSON.parse(geometry);
+  geometry && (updateClinic.geometry = JSON.parse(geometry));
   req.file &&
     (updateClinic.coverImage = {
       url: req.file?.path ?? "",
       filename: req.file?.filename ?? "",
     });
+  console.log(updateClinic);
   await updateClinic.save();
 
   if (req.body.deleteCoverImage) {
