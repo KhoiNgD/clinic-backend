@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.use(authController.protect);
 
-router.get("/getForClinic", reviewController.getForClinic);
+router.get("/clinic", reviewController.getClinicReviews);
 router.post("/:clinicId", reviewController.createReview);
 router.post("/:reviewId", reviewController.createReply);
 

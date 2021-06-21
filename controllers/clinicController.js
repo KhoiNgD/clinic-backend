@@ -45,12 +45,10 @@ exports.updateScheduleClinic = catchAsync(async (req, res, next) => {
   const user = req.user;
   const clinic = await Clinic.findOne({ email: user.email });
   clinic.schedule = [];
-  await clinic.save();
-
   const scheduleInput = createScheduleClinic(req);
   clinic.schedule.push(...scheduleInput);
-
   await clinic.save();
+
   res.status(201).json({
     status: "success",
     data: {
