@@ -8,6 +8,6 @@ router.use(authController.protect);
 
 router.get("/clinic", reviewController.getClinicReviews);
 router.post("/:clinicId", reviewController.createReview);
-router.post("/:reviewId", reviewController.createReply);
+router.post("/reply/:reviewId", reviewController.createReply);
 
 module.exports = router;
