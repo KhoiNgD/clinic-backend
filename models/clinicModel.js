@@ -75,7 +75,7 @@ clinicSchema.virtual("ratingAvg").get(function () {
     this.reviews.length
   );
 });
-
+//clinicSchema.index({ geometry: "2dsphere" });
 clinicSchema.pre(/^find/, function (next) {
   this.populate({ path: "reviews", populate: "user" });
   next();

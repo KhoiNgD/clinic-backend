@@ -143,6 +143,38 @@ exports.getApprovedClinics = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getNearestClinics = catchAsync(async (req, res, next) => {
+  Clinic.aggregate(
+    [
+      {
+        $geoNear: {
+          key: "geometry",
+          near: {
+            type: "Point",
+            coordinates: [105, 10],
+          },
+          distanceField: "dist.calculated",
+          //maxDistance: 300000,
+          spherical: true,
+        },
+      },
+    ],
+    (err, data) => {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.status(200).json({
+        status: "success",
+        results: data.length,
+        data: {
+          data: data,
+        },
+      });
+    }
+  );
+});
+
 exports.createClinic = catchAsync(async (req, res, next) => {
   if (!req.file) return res.status(422).send("Please upload a file");
   const clinic = new Clinic(req.body);
