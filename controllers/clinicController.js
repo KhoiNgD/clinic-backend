@@ -144,6 +144,8 @@ exports.getApprovedClinics = catchAsync(async (req, res, next) => {
 });
 
 exports.getNearestClinics = catchAsync(async (req, res, next) => {
+  const long = req.query.long;
+  const lat = req.query.lat;
   Clinic.aggregate(
     [
       {
@@ -151,7 +153,7 @@ exports.getNearestClinics = catchAsync(async (req, res, next) => {
           key: "geometry",
           near: {
             type: "Point",
-            coordinates: [105, 10],
+            coordinates: [parseFloat(long), parseFloat(lat)],
           },
           distanceField: "dist.calculated",
           //maxDistance: 300000,
