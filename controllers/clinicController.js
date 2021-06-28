@@ -158,6 +158,9 @@ exports.getNearestClinics = catchAsync(async (req, res, next) => {
           distanceField: "dist.calculated",
           //maxDistance: 300000,
           spherical: true,
+          $sort: {
+            distanceField: 1,
+          },
         },
       },
     ],
