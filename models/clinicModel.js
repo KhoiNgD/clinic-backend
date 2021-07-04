@@ -76,6 +76,24 @@ clinicSchema.virtual("ratingAvg").get(function () {
   );
 });
 
+clinicSchema.statics.getNearestClinics = async function (lng, lat) {
+  return await this.aggregate([
+    {
+      $geoNear: {
+        key: "geometry",
+        near: {
+          type: "Point",
+          coordinates: [parseFloat(lng), parseFloat(lat)],
+        },
+        distanceField: "dist.calculated",
+        query: { status: "approved" },
+        uniqueDocs: true,
+        spherials: true,
+      },
+    },
+  ]);
+};
+
 clinicSchema.pre(/^find/, function (next) {
   this.populate({ path: "reviews", populate: "user" });
   next();

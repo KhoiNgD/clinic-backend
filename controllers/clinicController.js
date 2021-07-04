@@ -145,21 +145,8 @@ exports.getApprovedClinics = catchAsync(async (req, res, next) => {
 
 exports.getNearestClinics = catchAsync(async (req, res, next) => {
   const { lng, lat } = req.query;
-  const clinics = await Clinic.aggregate([
-    {
-      $geoNear: {
-        key: "geometry",
-        near: {
-          type: "Point",
-          coordinates: [parseFloat(lng), parseFloat(lat)],
-        },
-        distanceField: "dist.calculated",
-        query: { status: "approved" },
-        spherials: true,
-      },
-    },
-  ]);
-  res.status(201).json({
+  const clinics = await Clinic.getNearestClinics(lng, lat);
+  res.status(200).json({
     status: "success",
     found: clinics.length,
     data: {
