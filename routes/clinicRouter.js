@@ -41,7 +41,7 @@ router
 
 router.get("/approved-clinics", clinicController.getApprovedClinics);
 
-router.route("/nearest-clinics").get(clinicController.getNearestClinics);
+router.get("/nearest-clinics", clinicController.getNearestClinics);
 router
   .route("/:id")
   .get(clinicController.getClinic)

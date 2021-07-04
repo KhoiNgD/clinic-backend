@@ -75,7 +75,7 @@ clinicSchema.virtual("ratingAvg").get(function () {
     this.reviews.length
   );
 });
-
+clinicSchema.index({ geometry: "2dsphere" });
 clinicSchema.statics.getNearestClinics = async function (lng, lat) {
   return await this.aggregate([
     {
@@ -86,7 +86,7 @@ clinicSchema.statics.getNearestClinics = async function (lng, lat) {
           coordinates: [parseFloat(lng), parseFloat(lat)],
         },
         distanceField: "dist.calculated",
-        query: { status: "approved" },
+        //query: { status: "approved" },
         uniqueDocs: true,
         spherials: true,
       },

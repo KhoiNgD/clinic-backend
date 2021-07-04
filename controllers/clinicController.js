@@ -146,6 +146,7 @@ exports.getApprovedClinics = catchAsync(async (req, res, next) => {
 exports.getNearestClinics = catchAsync(async (req, res, next) => {
   const { lng, lat } = req.query;
   const clinics = await Clinic.getNearestClinics(lng, lat);
+
   res.status(200).json({
     status: "success",
     found: clinics.length,
