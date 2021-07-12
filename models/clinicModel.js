@@ -86,7 +86,7 @@ clinicSchema.statics.getNearestClinics = async function (lng, lat) {
           coordinates: [parseFloat(lng), parseFloat(lat)],
         },
         distanceField: "dist.calculated",
-        //query: { status: "approved" },
+        query: { status: "approved" },
         uniqueDocs: true,
         spherials: true,
       },
