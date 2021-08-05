@@ -2,7 +2,7 @@ exports.createScheduleClinic = (req) => {
   const { monday, tuesday, wednesday, thursday, friday, saturday, sunday } =
     req.body;
 
-  const getWorkingHours = (day) =>
+  const getWorkingHours = (day) => {
     JSON.parse(day).map((hours) => {
       let startTime, endTime;
       if (!hours.length) {
@@ -14,8 +14,13 @@ exports.createScheduleClinic = (req) => {
       }
       return { startTime, endTime };
     });
+  };
 
   return [
+    {
+      dayOfWeek: 0,
+      workingHours: getWorkingHours(sunday),
+    },
     {
       dayOfWeek: 1,
       workingHours: getWorkingHours(monday),
@@ -39,10 +44,6 @@ exports.createScheduleClinic = (req) => {
     {
       dayOfWeek: 6,
       workingHours: getWorkingHours(saturday),
-    },
-    {
-      dayOfWeek: 0,
-      workingHours: getWorkingHours(sunday),
     },
   ];
 };

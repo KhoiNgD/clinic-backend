@@ -106,6 +106,7 @@ clinicSchema.statics.getNearestClinics = async function (lng, lat) {
 };
 
 clinicSchema.pre(/^find/, function (next) {
+  this.select("-schedule.workingHours._id -schedule._id -__v");
   this.populate({ path: "reviews", populate: "user" });
   next();
 });

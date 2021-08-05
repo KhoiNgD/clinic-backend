@@ -105,14 +105,13 @@ exports.getClinic = catchAsync(async (req, res, next) => {
 exports.getScheduleClinic = catchAsync(async (req, res, next) => {
   const user = req.user;
   const clinic = await Clinic.findOne({ email: user.email })
-    .select("schedule -reviews -_id")
+    .select("-reviews -_id")
     .lean();
-  clinic.schedule.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
 
   res.status(200).json({
     status: "success",
     data: {
-      data: clinic,
+      data: clinic.schedule,
     },
   });
 });
@@ -120,7 +119,7 @@ exports.getScheduleClinic = catchAsync(async (req, res, next) => {
 exports.getClinicByToken = catchAsync(async (req, res, next) => {
   const user = req.user;
   const clinic = await Clinic.findOne({ email: user.email })
-    .select("-_id -__v -schedule -reviews -status")
+    .select("-_id -schedule -reviews -status")
     .lean();
 
   res.status(200).json({
@@ -165,12 +164,10 @@ exports.getClinicsBySymptoms = catchAsync(async (req, res, next) => {
     symptoms: { $in: symptoms },
   }).select("_id");
   const specialistIds = specialists.map((spec) => spec._id);
-
   const clinics = await Clinic.find({
     specialists: { $in: specialistIds },
     status: "approved",
   });
-
   res.status(200).json({
     status: "success",
     data: {
