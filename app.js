@@ -15,6 +15,7 @@ const userRouter = require("./routes/userRouter");
 const clinicRouter = require("./routes/clinicRouter");
 const bookingRouter = require("./routes/bookingRouter");
 const reviewRouter = require("./routes/reviewRouter");
+const specialistRouter = require("./routes/specialistRouter");
 
 // Start express app
 const app = express();
@@ -62,6 +63,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/clinics", clinicRouter);
 app.use("/api/v1/bookings", bookingRouter);
 app.use("/api/v1/reviews", reviewRouter);
+app.use("/api/v1/specialists", specialistRouter);
 
 app.get("/test", (req, res) => {
   res.json("Test Route");

@@ -21,6 +21,12 @@ const clinicSchema = mongoose.Schema(
     email: String,
     address: String,
     phone: String,
+    specialists: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Specialist",
+      },
+    ],
     geometry: {
       type: {
         type: String,
@@ -33,8 +39,12 @@ const clinicSchema = mongoose.Schema(
     },
     schedule: [
       {
-        startTime: Number,
-        endTime: Number,
+        workingHours: [
+          {
+            startTime: Number,
+            endTime: Number,
+          },
+        ],
         dayOfWeek: {
           type: Number,
           enum: [0, 1, 2, 3, 4, 5, 6],
@@ -75,6 +85,7 @@ clinicSchema.virtual("ratingAvg").get(function () {
     this.reviews.length
   );
 });
+
 clinicSchema.index({ geometry: "2dsphere" });
 clinicSchema.statics.getNearestClinics = async function (lng, lat) {
   return await this.aggregate([

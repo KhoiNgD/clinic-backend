@@ -40,8 +40,9 @@ router
   );
 
 router.get("/approved-clinics", clinicController.getApprovedClinics);
-
 router.get("/nearest-clinics", clinicController.getNearestClinics);
+router.get("/symptom", clinicController.getClinicsBySymptoms);
+
 router
   .route("/:id")
   .get(clinicController.getClinic)
