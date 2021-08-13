@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 const Specialist = require("../models/specialistModel");
 const catchAsync = require("../utils/catchAsync");
 const { createScheduleClinic } = require("../utils/createScheduleClinic");
+const { capitalFirstLetter } = require("../utils/formatText");
 const { sendClinicApprove } = require("../utils/email");
 const factory = require("./handlerFactory");
 
@@ -157,19 +158,26 @@ exports.getNearestClinics = catchAsync(async (req, res, next) => {
 
 exports.getClinicsBySymptoms = catchAsync(async (req, res, next) => {
   let { symptoms } = req.query;
-  symptoms = symptoms.includes(",")
-    ? symptoms.split(",").map((symptom) => capitalFirstLetter(symptom))
-    : symptoms;
-  const specialists = await Specialist.find({
-    symptoms: { $in: symptoms },
-  }).select("_id");
-  const specialistIds = specialists.map((spec) => spec._id);
-  const clinics = await Clinic.find({
-    specialists: { $in: specialistIds },
-    status: "approved",
-  });
+  let clinics;
+  if (!symptoms) {
+    clinics = await Clinic.find({ status: "approved" });
+  } else {
+    symptoms = symptoms.includes(",")
+      ? symptoms.split(",").map((symptom) => capitalFirstLetter(symptom))
+      : symptoms;
+    const specialists = await Specialist.find({
+      symptoms: { $in: symptoms },
+    }).select("_id");
+    const specialistIds = specialists.map((spec) => spec._id);
+    clinics = await Clinic.find({
+      specialists: { $in: specialistIds },
+      status: "approved",
+    });
+  }
+
   res.status(200).json({
     status: "success",
+    results: clinics.length,
     data: {
       data: clinics,
     },
