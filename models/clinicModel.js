@@ -90,7 +90,10 @@ clinicSchema.virtual("ratingAvg").get(function () {
 
 clinicSchema.pre(/^find/, function (next) {
   this.select("-schedule.workingHours._id -schedule._id -__v");
-  this.populate({ path: "reviews", populate: "user" });
+  this.populate({ path: "reviews", populate: "user" }).populate({
+    path: "specialists",
+    select: "name",
+  });
   next();
 });
 
