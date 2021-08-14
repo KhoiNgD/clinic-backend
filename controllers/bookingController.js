@@ -49,7 +49,6 @@ exports.getBookings = catchAsync(async (req, res, next) => {
   if (user.role === "patient") {
     bookings = await Booking.find({ user: user._id })
       .select("-user -__v")
-      .populate("clinic", "_id coverImage name -reviews")
       .lean();
   }
 
