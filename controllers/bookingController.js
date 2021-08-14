@@ -45,10 +45,12 @@ exports.getBookings = catchAsync(async (req, res, next) => {
     bookings = await Booking.find({ clinic: clinic._id })
       .select("-clinic -__v")
       .populate("user", "-role -__v");
+    bookings.ratingAvg = clinic.ratingAvg;
   }
   if (user.role === "patient") {
     bookings = await Booking.find({ user: user._id })
       .select("-user -__v")
+      .populate("clinic")
       .lean();
   }
 

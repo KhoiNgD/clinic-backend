@@ -36,9 +36,8 @@ exports.createReply = catchAsync(async (req, res, next) => {
 });
 
 exports.getClinicReviews = catchAsync(async (req, res, next) => {
-  const reviews = await Clinic.findOne({ email: req.user.email })
-    .select("reviews")
-    .lean();
+  const clinic = await Clinic.findOne({ email: req.user.email });
+  const reviews = clinic.reviews;
 
   res.status(201).json({
     status: "success",

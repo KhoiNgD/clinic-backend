@@ -120,7 +120,7 @@ exports.getScheduleClinic = catchAsync(async (req, res, next) => {
 exports.getClinicByToken = catchAsync(async (req, res, next) => {
   const user = req.user;
   const clinic = await Clinic.findOne({ email: user.email })
-    .select("-_id -schedule -reviews -status")
+    .select("-_id -reviews -status")
     .lean();
 
   res.status(200).json({
@@ -186,8 +186,13 @@ exports.getClinicsBySymptoms = catchAsync(async (req, res, next) => {
 
 exports.createClinic = catchAsync(async (req, res, next) => {
   if (!req.file) return res.status(422).send("Please upload a file");
-  const clinic = new Clinic(req.body);
-  clinic.geometry = JSON.parse(req.body.geometry);
+  const { specialists, geometry, ...body } = req.body;
+  const clinic = new Clinic(body);
+  const specialistsArr = JSON.parse(specialists);
+  specialistsArr.forEach((specialistId) =>
+    clinic.specialists.push(specialistId)
+  );
+  clinic.geometry = JSON.parse(geometry);
   clinic.coverImage = {
     url: req.file.path,
     filename: req.file.filename,
