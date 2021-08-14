@@ -89,3 +89,14 @@ exports.getBookedUsersByClinic = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.updateStatusBooking = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const booking = await Booking.findByIdAndUpdate(id, req.body, { new: true });
+  res.status(200).json({
+    status: "success",
+    data: {
+      data: booking,
+    },
+  });
+});

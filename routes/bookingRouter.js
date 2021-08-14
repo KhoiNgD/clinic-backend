@@ -21,4 +21,12 @@ router.get(
   bookingController.getBookedUsersByClinic
 );
 
+router
+  .route("/:id")
+  .put(
+    authController.protect,
+    authController.restrictTo("doctor"),
+    bookingController.updateStatusBooking
+  );
+
 module.exports = router;
