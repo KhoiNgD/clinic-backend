@@ -39,6 +39,14 @@ router
     clinicController.updateScheduleClinic
   );
 
+router
+  .route("/detail/statistic")
+  .get(
+    authController.protect,
+    authController.restrictTo("doctor"),
+    clinicController.getClinicStatistic
+  );
+
 router.get("/approved-clinics", clinicController.getApprovedClinics);
 router.get("/nearest-clinics", clinicController.getNearestClinics);
 router.get("/symptom", clinicController.getClinicsBySymptoms);

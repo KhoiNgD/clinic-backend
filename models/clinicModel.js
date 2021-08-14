@@ -69,6 +69,8 @@ const clinicSchema = mongoose.Schema(
   }
 );
 
+clinicSchema.index({ geometry: "2dsphere" });
+
 clinicSchema.virtual("reviewCount").get(function () {
   return this?.reviews?.length ?? undefined;
 });
@@ -85,25 +87,6 @@ clinicSchema.virtual("ratingAvg").get(function () {
     this.reviews.length
   );
 });
-
-clinicSchema.index({ geometry: "2dsphere" });
-clinicSchema.statics.getNearestClinics = async function (lng, lat) {
-  return await this.aggregate([
-    {
-      $geoNear: {
-        key: "geometry",
-        near: {
-          type: "Point",
-          coordinates: [parseFloat(lng), parseFloat(lat)],
-        },
-        distanceField: "dist.calculated",
-        query: { status: "approved" },
-        uniqueDocs: true,
-        spherials: true,
-      },
-    },
-  ]);
-};
 
 clinicSchema.pre(/^find/, function (next) {
   this.select("-schedule.workingHours._id -schedule._id -__v");

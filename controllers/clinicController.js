@@ -6,6 +6,7 @@ const { createScheduleClinic } = require("../utils/createScheduleClinic");
 const { capitalFirstLetter } = require("../utils/formatText");
 const { sendClinicApprove } = require("../utils/email");
 const factory = require("./handlerFactory");
+const Booking = require("../models/bookingModel");
 
 exports.getAllClinics = factory.getAll(Clinic);
 exports.deleteClinic = factory.deleteOne(Clinic);
@@ -94,12 +95,36 @@ exports.updateStatusClinic = catchAsync(async (req, res, next) => {
 
 exports.getClinic = catchAsync(async (req, res, next) => {
   const clinic = await Clinic.findById(req.params.id);
-
   res.status(200).json({
     status: "success",
     data: {
       data: clinic,
     },
+  });
+});
+
+exports.getClinicStatistic = catchAsync(async (req, res, next) => {
+  const user = req.user;
+  const clinic = await Clinic.findOne({ email: user.email });
+  const bookings = await Booking.find({ clinic: clinic._id }).select(
+    "-_id user"
+  );
+  const bookingUsers = bookings.filter(
+    (booking, index, self) =>
+      index ===
+      self.findIndex(
+        (t) => t.place === booking.place && t.name === booking.name
+      )
+  ).length;
+  const statistic = {};
+  statistic.ratings = clinic.reviews.reduce(
+    (count, review) => count + review.rating,
+    0
+  );
+  statistic.totalPatients = bookingUsers;
+  res.status(200).json({
+    status: "success",
+    data: statistic,
   });
 });
 
@@ -145,7 +170,21 @@ exports.getApprovedClinics = catchAsync(async (req, res, next) => {
 
 exports.getNearestClinics = catchAsync(async (req, res, next) => {
   const { lng, lat } = req.query;
-  const clinics = await Clinic.getNearestClinics(lng, lat);
+  const clinics = await Clinic.aggregate([
+    {
+      $geoNear: {
+        key: "geometry",
+        near: {
+          type: "Point",
+          coordinates: [parseFloat(lng), parseFloat(lat)],
+        },
+        distanceField: "dist.calculated",
+        query: { status: "approved" },
+        uniqueDocs: true,
+        spherials: true,
+      },
+    },
+  ]);
 
   res.status(200).json({
     status: "success",
