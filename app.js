@@ -20,11 +20,18 @@ const specialistRouter = require("./routes/specialistRouter");
 // Start express app
 const app = express();
 
+app.enable("trust proxy");
+
 // ----------------- GLOBAL MIDDLEWARES -----------------
 // Implement cors
 // app.use(cors());
-// app.options("*", cors());
-app.use(cors({ origin: true, credentials: true }));
+app.use(
+  cors({
+    origin: "https://clinics-frontend-swp493.herokuapp.com/",
+  })
+);
+app.options("*", cors());
+// app.use(cors({ origin: true, credentials: true }));
 
 // Serving static files
 app.set("view engine", "pug");
