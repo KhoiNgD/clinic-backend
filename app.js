@@ -28,6 +28,7 @@ app.enable("trust proxy");
 app.use(
   cors({
     origin: "https://clinics-frontend-swp493.herokuapp.com/",
+    credentials: true,
   })
 );
 app.options("*", cors());
