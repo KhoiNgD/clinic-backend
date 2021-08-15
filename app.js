@@ -22,8 +22,14 @@ const app = express();
 
 // ----------------- GLOBAL MIDDLEWARES -----------------
 // Implement cors
-app.use(cors());
+// app.use(cors());
 // app.options("*", cors());
+const corsOptions = {
+  origin: "*",
+  credentials: true,
+  methods: ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+};
+app.use(cors(corsOptions));
 // app.use(cors({ origin: true, credentials: true }));
 // app.use(
 //   cors({
