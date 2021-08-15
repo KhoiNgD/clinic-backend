@@ -24,7 +24,7 @@ app.enable("trust proxy");
 
 // ----------------- GLOBAL MIDDLEWARES -----------------
 // Implement cors
-app.use(cors({ credentials: true }));
+app.use(cors());
 // app.use(
 //   cors({
 //     origin: "https://clinics-frontend-swp493.herokuapp.com/",
