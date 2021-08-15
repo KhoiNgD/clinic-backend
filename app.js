@@ -22,14 +22,14 @@ const app = express();
 
 // ----------------- GLOBAL MIDDLEWARES -----------------
 // Implement cors
-// app.use(cors());
+app.use(cors());
 // app.options("*", cors());
 // app.use(cors({ origin: true, credentials: true }));
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+// app.use(
+//   cors({
+//     origin: "*",
+//   })
+// );
 
 // Serving static files
 app.set("view engine", "pug");
