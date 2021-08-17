@@ -7,6 +7,7 @@ const { capitalFirstLetter } = require("../utils/formatText");
 const { sendClinicApprove } = require("../utils/email");
 const factory = require("./handlerFactory");
 const Booking = require("../models/bookingModel");
+const { cloudinary: cloudd } = require("../cloudinary");
 
 exports.getAllClinics = factory.getAll(Clinic);
 exports.deleteClinic = factory.deleteOne(Clinic);
@@ -40,7 +41,7 @@ exports.updateInfoClinic = catchAsync(async (req, res, next) => {
   await updateClinic.save();
 
   if (req.body.deleteCoverImage) {
-    await cloudinary.uploader.destroy(req.body.deleteAvatar);
+    await cloudd.uploader.destroy(req.body.deleteCoverImage);
   }
 
   res.status(200).json({
