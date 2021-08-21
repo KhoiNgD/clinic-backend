@@ -3,17 +3,9 @@ exports.createScheduleClinic = (req) => {
     req.body;
 
   const getWorkingHours = (day) =>
-    JSON.parse(day).map((hours) => {
-      let startTime, endTime;
-      if (!hours.length) {
-        startTime = 0;
-        endTime = 0;
-      } else {
-        startTime = hours[0];
-        endTime = hours[1];
-      }
-      return { startTime, endTime };
-    });
+    JSON.parse(day)
+      .filter((hours) => hours.length)
+      .map((hours) => ({ startTime: hours[0], endTime: hours[1] }));
 
   const data = [
     {
