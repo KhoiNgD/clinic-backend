@@ -232,6 +232,63 @@ exports.getClinicsBySymptoms = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getClinicsBySickDescription = catchAsync(async (req, res, next) => {
+  const { diagnosis } = req.query;
+  if (!diagnosis) {
+    clinics = await Clinic.find({ status: "approved" });
+  } else {
+    const diagnosisObj = {};
+    diagnosis
+      .split(" ")
+      .forEach(
+        (item) =>
+          (diagnosisObj[item.toLowerCase()] =
+            diagnosisObj[item.toLowerCase()]++ || 0)
+      );
+    const specialists = await Specialist.find({}).select("symptoms");
+    let symptoms = specialists.reduce(
+      (accumulator, currentValue) => [...accumulator, ...currentValue.symptoms],
+      []
+    );
+    let symptomResult = [];
+    let max = 0;
+    symptoms.forEach((symptom) => {
+      let count = 0;
+      symptom
+        .split(" ")
+        .forEach(
+          (item) => diagnosisObj.hasOwnProperty(item.toLowerCase()) && count++
+        );
+      if (count === max) symptomResult.push(symptom);
+      if (count > max) {
+        max = count;
+        symptomResult.length = 0;
+        symptomResult.push(symptom);
+      }
+    });
+
+    symptomResult = symptomResult.includes(",")
+      ? symptomResult.split(",").map((symptom) => capitalFirstLetter(symptom))
+      : symptomResult;
+    const specialistsWithSymptoms = await Specialist.find({
+      symptoms: { $in: symptomResult },
+    }).select("_id");
+    const specialistIds = specialistsWithSymptoms.map((spec) => spec._id);
+    clinics = await Clinic.find({
+      specialists: { $in: specialistIds },
+      status: "approved",
+    });
+  }
+
+  res.status(200).json({
+    status: "success",
+    results: clinics.length,
+    data: {
+      data: clinics,
+    },
+  });
+});
+
 exports.createClinic = catchAsync(async (req, res, next) => {
   if (!req.file) return res.status(422).send("Please upload a file");
   const { specialists, geometry, ...body } = req.body;
